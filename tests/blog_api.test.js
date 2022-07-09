@@ -87,6 +87,8 @@ test('id is the only identifier property in blogs objects', async () => {
 
   const ids = response.body.map((r) => r.id === response.body[0].id);
 
+  expect(ids).toBeDefined();
+
   const valids = ids.filter((item) => item === true);
 
   expect(valids).toHaveLength(1);
@@ -111,6 +113,27 @@ test('a valid blog can be added', async () => {
 
   const titles = blogsAtEnd.map((n) => n.title);
   expect(titles).toContain('Culoo');
+});
+
+test('a new blog with no likes property defined gets 0 likes by default', async () => {
+  const newBlog = {
+    title: 'Sugna',
+    author: 'Matt Meneguzzi',
+    url: 'www.sugna.it',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const likes = blogsAtEnd.map((n) => n.likes);
+  console.log(likes);
+  expect(likes).toContain(0);
 });
 
 afterAll(() => {

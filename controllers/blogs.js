@@ -22,7 +22,7 @@ blogsRouter.post('/', async (request, response, next) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes ? body.likes : 0,
   });
 
   // trycatch is here for 4.10: Blog list tests, step3, usually handled by express-async-errors
