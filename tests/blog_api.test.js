@@ -103,6 +103,16 @@ test('a blog can be deleted', async () => {
   expect(titles).not.toContain(blogToDelete.title);
 });
 
+test('id is the only identifier property in blogs objects', async () => {
+  const response = await api.get('/api/blogs');
+
+  const ids = response.body.map((r) => r.id === response.body[0].id);
+
+  const valids = ids.filter((item) => item === true);
+
+  expect(valids).toHaveLength(1);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

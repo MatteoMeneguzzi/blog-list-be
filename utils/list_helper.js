@@ -58,8 +58,6 @@ const mostBlogs = (blogs) => {
   mostBlogsAuthor.author = mostFrequent;
   mostBlogsAuthor.blogs = compare;
 
-  console.log(mostBlogsAuthor);
-
   return mostBlogsAuthor.author === undefined ? undefined : mostBlogsAuthor;
 };
 
