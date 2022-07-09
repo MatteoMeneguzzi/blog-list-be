@@ -38,27 +38,6 @@ test('the first blog is about culi', async () => {
   expect(titles).toContain('Culoo');
 });
 
-test('a valid blog can be added', async () => {
-  const newBlog = {
-    title: 'Merda',
-    author: 'Matt Meneguzzi',
-    url: 'www.merda.it',
-    likes: 3,
-  };
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
-
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
-
-  const titles = blogsAtEnd.map((n) => n.title);
-  expect(titles).toContain('Culoo');
-});
-
 test('blog without title is not added', async () => {
   const newBlog = {
     title: true,
@@ -111,6 +90,27 @@ test('id is the only identifier property in blogs objects', async () => {
   const valids = ids.filter((item) => item === true);
 
   expect(valids).toHaveLength(1);
+});
+
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'Merda',
+    author: 'Matt Meneguzzi',
+    url: 'www.merda.it',
+    likes: 3,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const titles = blogsAtEnd.map((n) => n.title);
+  expect(titles).toContain('Culoo');
 });
 
 afterAll(() => {

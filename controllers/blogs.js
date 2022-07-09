@@ -15,7 +15,7 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 });
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
   const { body } = request;
 
   const blog = new Blog({
@@ -25,8 +25,13 @@ blogsRouter.post('/', async (request, response) => {
     likes: body.likes,
   });
 
-  const savedBlog = await blog.save();
-  response.status(201).json(savedBlog);
+  // trycatch is here for 4.10: Blog list tests, step3, usually handled by express-async-errors
+  try {
+    const savedBlog = await blog.save();
+    response.status(201).json(savedBlog);
+  } catch (error) {
+    next(error);
+  }
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
