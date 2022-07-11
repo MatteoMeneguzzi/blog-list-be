@@ -10,6 +10,6 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
-    'operator-linebreak': ['error', 'after'],
+    'operator-linebreak': ['error', 'before'],
   },
 };
