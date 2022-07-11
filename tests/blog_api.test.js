@@ -69,8 +69,6 @@ test('a blog can be deleted', async () => {
   const blogsAtStart = await helper.blogsInDb();
   const blogToDelete = blogsAtStart[0];
 
-  console.log(blogToDelete);
-
   await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
   const blogsAtEnd = await helper.blogsInDb();
@@ -146,6 +144,24 @@ test('blog without title and url is not added', async () => {
   const blogsAtEnd = await helper.blogsInDb();
 
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
+test('a blog can be updated with valid properties', async () => {
+  const newBlog = {
+    likes: 8,
+    author: 'Luuuuuuuuu',
+  };
+
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[1];
+
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(newBlog).expect(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  const likes = blogsAtEnd.map((n) => n.likes);
+  expect(likes).toContain(8);
 });
 
 afterAll(() => {

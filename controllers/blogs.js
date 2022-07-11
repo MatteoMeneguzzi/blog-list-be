@@ -34,24 +34,35 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+// trycatch is here for 4.13 Blog list expansions, step1, usually handled by express-async-errors
+blogsRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await Blog.findByIdAndRemove(request.params.id);
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
 
-blogsRouter.put('/:id', (request, response, next) => {
+// trycatch is here for 4.14 Blog list expansions, step2, usually handled by express-async-errors
+blogsRouter.put('/:id', async (request, response, next) => {
   const { body } = request;
 
   const blog = {
-    content: body.content,
-    important: body.important,
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
   };
 
-  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .then((updatedBlog) => {
-      response.json(updatedBlog);
-    })
-    .catch((error) => next(error));
+  try {
+    const updatedPost = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+    });
+    response.status(204).json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = blogsRouter;
