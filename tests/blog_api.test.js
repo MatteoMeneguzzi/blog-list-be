@@ -132,8 +132,20 @@ test('a new blog with no likes property defined gets 0 likes by default', async 
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
   const likes = blogsAtEnd.map((n) => n.likes);
-  console.log(likes);
+
   expect(likes).toContain(0);
+});
+
+test('blog without title and url is not added', async () => {
+  const newBlog = {
+    likes: 8,
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
 afterAll(() => {

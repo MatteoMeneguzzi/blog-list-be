@@ -9,7 +9,7 @@ const blogSchema = new mongoose.Schema({
     minlength: 5,
   },
   author: String,
-  url: String,
+  url: { type: String, required: true },
   likes: Number,
 });
 
