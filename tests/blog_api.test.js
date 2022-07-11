@@ -187,6 +187,63 @@ describe('when there is initially one user in db', () => {
   });
 });
 
+describe('addition of a new user', () => {
+  test('fails with short password', async () => {
+    const usersAtBeginning = await helper.usersInDb();
+    const newUser = {
+      username: 'asycs',
+      name: 'Gianni',
+      password: 'bb',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAtEnd = await helper.usersInDb();
+    console.log(usersAtEnd);
+    expect(usersAtEnd).toHaveLength(usersAtBeginning.length);
+  });
+
+  test('fails with short username', async () => {
+    const usersAtBeginning = await helper.usersInDb();
+
+    const newUser = {
+      username: 's',
+      name: 'Gianni',
+      password: 'bbrewr',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAtEnd = await helper.usersInDb();
+    console.log(usersAtEnd);
+
+    expect(usersAtEnd).toHaveLength(usersAtBeginning.length);
+  });
+
+  test('fails with status code 400 if data invalid', async () => {
+    const usersAtStart = await helper.usersInDb();
+    console.log(usersAtStart);
+    const newUser = {
+      username: 'ciao',
+      name: 'mmmmmmmm',
+    };
+
+    await api.post('/api/users').send(newUser).expect(400);
+
+    const usersAtEnd = await helper.usersInDb();
+
+    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
